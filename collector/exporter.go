@@ -64,11 +64,6 @@ func NewMetrics() Metrics {
 			Name:      "last_scrape_error",
 			Help:      "Whether the last scrape of metrics from harbor resulted in an error (1 for error, 0 for success).",
 		}),
-		//HarborUp: prometheus.NewGauge(prometheus.GaugeOpts{
-		//	Namespace: namespace,
-		//	Name:      "up",
-		//	Help:      "Whether the harbor is up.",
-		//}),
 	}
 }
 
@@ -78,7 +73,6 @@ func (e *Exporter) Describe(ch chan <-  *prometheus.Desc) {
 	ch <- e.metrics.TotalScrapes.Desc()
 	ch <- e.metrics.Error.Desc()
 	e.metrics.ScrapeErrors.Describe(ch)
-	//ch <- e.metrics.HarborUp.Desc()
 }
 
 func (e *Exporter) Collect(ch chan <- prometheus.Metric) {
@@ -86,7 +80,6 @@ func (e *Exporter) Collect(ch chan <- prometheus.Metric) {
 	ch <- e.metrics.TotalScrapes
 	ch <- e.metrics.Error
 	e.metrics.ScrapeErrors.Collect(ch)
-	//ch <- e.metrics.HarborUp
 }
 
 func (e *Exporter) scrape(ch chan <- prometheus.Metric) {
