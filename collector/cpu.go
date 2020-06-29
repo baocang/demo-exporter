@@ -11,7 +11,7 @@ type CpuLoad struct {}
 // cpu info
 
 func (CpuLoad) Name() string {
-	return namespace + "cpu"
+	return namespace + "_cpu_load"
 }
 
 func (CpuLoad) Scrape(ch chan <- prometheus.Metric) error  {
@@ -21,7 +21,7 @@ func (CpuLoad) Scrape(ch chan <- prometheus.Metric) error  {
 		return err
 	}
 	ch <- prometheus.MustNewConstMetric(
-		NewDesc("cpu_load","one","cpu load",nil),
+		NewDesc("cpu_load","one","cpu load",prometheus.Labels{"host":"12345"}),
 		prometheus.GaugeValue,
 		cpuload.Load1,
 	)

@@ -7,18 +7,22 @@ import (
 	log "github.com/sirupsen/logrus"
 	"myexporter/collector"
 	"net/http"
+	"strings"
 )
 
 var (
-	metricsPath string = "/metrics"
+	metricsPath string = "https://github.com/strive-after/demo-exporter"
 	version string = "v1.0"
 	listenAddress string
 	help bool
+	disable  string  //命令行传入的需要关闭的指标
+	disables  []string   //处理命令行传入的根据,分割为一个切片做处理
 )
 
 func init()  {
 	flag.StringVar(&listenAddress,"addr",":8080","addr")
 	flag.BoolVar(&help,"h",false,"help")
+	flag.StringVar(&disable,"disable","","关闭的指标收集器")
 }
 
 
@@ -30,15 +34,18 @@ func main() {
 		flag.Usage()
 		return
 	}
+	disables = strings.Split(disable,",")
 	//手动开关
-	//for scraper, enabledByDefault := range collector.Scrapers {
-	//	defaultOn := false
-	//	if enabledByDefault {
-	//		defaultOn = true
-	//	}
-	//	f := flag.Bool("collect."+scraper.Name(), defaultOn, scraper.Help())
-	//	scraperFlags[scraper] = f
-	//}
+	//通过用户输入的我们做关闭
+	for scraper ,_:= range collector.Scrapers {
+		for _,v := range disables {
+			if v == scraper.Name() {
+				collector.Scrapers[scraper] = false
+				break
+			}
+		}
+	}
+
 	//访问/的时候返回一些基础提示
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`<html>
