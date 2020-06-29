@@ -15,13 +15,15 @@ func (CpuLoad) Name() string {
 }
 
 func (CpuLoad) Scrape(ch chan <- prometheus.Metric) error  {
+	hostinfo := GetHost()
 	cpuload,err  := load.Avg()
 	if err != nil {
 		log.Printf("cpu load is not ,%v\n",err)
 		return err
 	}
 	ch <- prometheus.MustNewConstMetric(
-		NewDesc("cpu_load","one","cpu load",prometheus.Labels{"host":"12345"}),
+		//这里的label是固定标签 我们可以通过
+		NewDesc("cpu_load","one","cpu load",prometheus.Labels{"host":hostinfo.HostName,"ip":hostinfo.IP}),
 		prometheus.GaugeValue,
 		cpuload.Load1,
 	)
