@@ -73,7 +73,7 @@ func main() {
 
 	http.Handle("/metrics", promhttp.Handler())
 	//后续这里需要做flag 命令行启动参数
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(listenAddress, nil); err != nil {
 		log.Printf("Error occur when start server %v", err)
 	}
 }
