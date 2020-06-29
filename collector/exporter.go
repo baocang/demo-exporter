@@ -11,6 +11,7 @@ var (
 	namespace string = "test"
 	exporter string = "exporter"
 )
+
 func Name() string {
 	return  name
 }
@@ -21,10 +22,12 @@ type Exporter struct {
 }
 
 type Metrics struct {
+	//收集指标的总次数
 	TotalScrapes prometheus.Counter
+	//收集指标中发生错误的次数
 	ScrapeErrors *prometheus.CounterVec
+	//最后一次是否发生了错误
 	Error        prometheus.Gauge
-	//HarborUp     prometheus.Gauge
 }
 
 func NewDesc(subsystem, name, help string,label prometheus.Labels) *prometheus.Desc {
@@ -50,19 +53,19 @@ func NewMetrics() Metrics {
 			Namespace: namespace,
 			Subsystem: subsystem,
 			Name:      "scrapes_total",
-			Help:      "Total number of times harbor was scraped for metrics.",
+			Help:      "Total number of times  was scraped for metrics.",
 		}),
 		ScrapeErrors: prometheus.NewCounterVec(prometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
 			Name:      "scrape_errors_total",
-			Help:      "Total number of times an error occurred scraping a harbor.",
+			Help:      "Total number of times an error occurred scraping .",
 		}, []string{"collector"}),
 		Error: prometheus.NewGauge(prometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: subsystem,
 			Name:      "last_scrape_error",
-			Help:      "Whether the last scrape of metrics from harbor resulted in an error (1 for error, 0 for success).",
+			Help:      "Whether the last scrape of metrics  resulted in an error (1 for error, 0 for success).",
 		}),
 	}
 }
@@ -75,6 +78,7 @@ func (e *Exporter) Describe(ch chan <-  *prometheus.Desc) {
 	e.metrics.ScrapeErrors.Describe(ch)
 }
 
+//收集指标
 func (e *Exporter) Collect(ch chan <- prometheus.Metric) {
 	e.scrape(ch)
 	ch <- e.metrics.TotalScrapes
