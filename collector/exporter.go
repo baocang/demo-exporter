@@ -71,7 +71,7 @@ func NewMetrics() Metrics {
 }
 
 
-
+//添加描述符
 func (e *Exporter) Describe(ch chan <-  *prometheus.Desc) {
 	ch <- e.metrics.TotalScrapes.Desc()
 	ch <- e.metrics.Error.Desc()
