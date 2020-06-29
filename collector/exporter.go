@@ -30,13 +30,15 @@ type Metrics struct {
 	Error        prometheus.Gauge
 }
 
-func NewDesc(subsystem, name, help string,label prometheus.Labels) *prometheus.Desc {
+//fqname会把namespace subsystem name拼接起来
+//传入动态以及静态标签 设置标签
+func NewDesc(subsystem, name, help string,movinglabel []string ,label prometheus.Labels) *prometheus.Desc {
 	return prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subsystem, name),
-		help, nil, label,
+		help, movinglabel, label,
 	)
 }
-
+//判断*exporter是否实现了collector这个接口的所有方法
 var  _ prometheus.Collector = (*Exporter)(nil)
 
 func New(metrics Metrics, scrapers []Scraper) *Exporter{
@@ -85,7 +87,7 @@ func (e *Exporter) Collect(ch chan <- prometheus.Metric) {
 	ch <- e.metrics.Error
 	e.metrics.ScrapeErrors.Collect(ch)
 }
-
+//通过例程并发的收集指标 需要加waitgroup
 func (e *Exporter) scrape(ch chan <- prometheus.Metric) {
 	var (
 		wg sync.WaitGroup

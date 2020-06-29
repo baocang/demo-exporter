@@ -21,19 +21,22 @@ func (CpuLoad) Scrape(ch chan <- prometheus.Metric) error  {
 		log.Printf("cpu load is not ,%v\n",err)
 		return err
 	}
+
 	ch <- prometheus.MustNewConstMetric(
 		//这里的label是固定标签 我们可以通过
-		NewDesc("cpu_load","one","cpu load",prometheus.Labels{"host":hostinfo.HostName,"ip":hostinfo.IP}),
+		NewDesc("cpu_load","one","cpu load",[]string{"type"},prometheus.Labels{"host":hostinfo.HostName,"ip":hostinfo.IP}),
 		prometheus.GaugeValue,
 		cpuload.Load1,
+		//动态标签的值 可以有多个动态标签
+		"metrics",
 	)
 	ch <- prometheus.MustNewConstMetric(
-		NewDesc("cpu_load","five","cpu load",nil),
+		NewDesc("cpu_load","five","cpu load",nil,nil),
 		prometheus.GaugeValue,
 		cpuload.Load5,
 	)
 	ch <- prometheus.MustNewConstMetric(
-		NewDesc("cpu_load","fifteen","cpu load",nil),
+		NewDesc("cpu_load","fifteen","cpu load",nil,nil),
 		prometheus.GaugeValue,
 		cpuload.Load15,
 	)
