@@ -14,7 +14,7 @@ func (CpuLoad) Name() string {
 	return namespace + "_cpu_load"
 }
 
-func (CpuLoad) Scrape(ch chan <- prometheus.Metric) error  {
+func (CpuLoad) Scrape(domains []Domain,ch chan <- prometheus.Metric) error  {
 	hostinfo := GetHost()
 	cpuload,err  := load.Avg()
 	if err != nil {

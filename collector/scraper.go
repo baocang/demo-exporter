@@ -11,5 +11,5 @@ type Scraper interface {
 	//Help() string
 
 	// Scrape collects data from client and sends it over channel as prometheus metric.
-	Scrape(ch chan<- prometheus.Metric) error
+	Scrape(domains []Domain,ch chan<- prometheus.Metric) error
 }

@@ -10,6 +10,7 @@ var (
 	name string= "test_exporter"
 	namespace string = "test"
 	exporter string = "exporter"
+	domains []Domain
 )
 
 func Name() string {
@@ -101,7 +102,7 @@ func (e *Exporter) scrape(ch chan <- prometheus.Metric) {
 		go func(scraper Scraper) {
 			defer wg.Done()
 			label := scraper.Name()
-			err = scraper.Scrape(ch)
+			err = scraper.Scrape(domains,ch)
 			if err != nil {
 				log.WithField("scraper", scraper.Name()).Error(err)
 				e.metrics.ScrapeErrors.WithLabelValues(label).Inc()
